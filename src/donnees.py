@@ -1,0 +1,2 @@
+donnees={"Cinkassé":["Cinkassé 1","Cinkassé 2"],"Tône":["Tône 1", "Tône 2", "Tône 3", "Tône 4"], "Kpendjal":["Kpendjal 1", "Kpendjal 2"],"Kpendjal-Ouest":["Kpendjal Ouest 1", "Kpendjal Ouest 2"],"Oti":["Oti 1","Oti 2"],"Oti-Sud":["Oti-Sud 1","Oti-Sud 2"],"Tandjouaré":["Tandjouaré 1", "Tandjouaré 2"]}
+reservoirs=["Plastique (polyéthylène)","Métallique","Béton (maçonné)","Surélevé","Souple (flexible)"]

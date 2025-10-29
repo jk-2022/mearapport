@@ -1,0 +1,302 @@
+{
+    "projets": [
+        {
+            "id": 1,
+            "name": "coso",
+            "title": "",
+            "created_at": "21/08/2025"
+        }
+    ],
+    "rapports": [],
+    "entreprise": [
+        {
+            "id": 1,
+            "nom": "BERT BTP",
+            "contact": "",
+            "created_at": "2025-08-21 13:54:46"
+        },
+        {
+            "id": 2,
+            "nom": "BI la paix ",
+            "contact": "",
+            "created_at": "2025-08-29 10:36:53"
+        },
+        {
+            "id": 3,
+            "nom": "Tchamie et Fils",
+            "contact": "",
+            "created_at": "2025-09-04 12:35:04"
+        },
+        {
+            "id": 4,
+            "nom": "SAWARI",
+            "contact": "",
+            "created_at": "2025-10-02 16:09:52"
+        }
+    ],
+    "localisation": [
+        {
+            "id": 1,
+            "projet_id": 1,
+            "prefecture": "Oti-Sud",
+            "commune": "Oti-Sud 1",
+            "canton": "Mogou",
+            "localite": "tchapere",
+            "lieu": "tchapere",
+            "coordonnee_x": "",
+            "coordonnee_y": "",
+            "entreprise": "BERT BTP",
+            "created_at": "2025-08-21 13:54:00"
+        },
+        {
+            "id": 2,
+            "projet_id": 1,
+            "prefecture": "Oti-Sud",
+            "commune": "Oti-Sud 1",
+            "canton": "Gando",
+            "localite": "Gbateni",
+            "lieu": "Gbateni",
+            "coordonnee_x": "",
+            "coordonnee_y": "",
+            "entreprise": null,
+            "created_at": "2025-08-28 10:44:33"
+        },
+        {
+            "id": 3,
+            "projet_id": 1,
+            "prefecture": "Oti-Sud",
+            "commune": "Oti-Sud 1",
+            "canton": "Mogou",
+            "localite": "Namoumale ",
+            "lieu": "Namoumale",
+            "coordonnee_x": "10,4159",
+            "coordonnee_y": "0,6154",
+            "entreprise": "BERT BTP",
+            "created_at": "2025-08-28 14:48:01"
+        },
+        {
+            "id": 4,
+            "projet_id": 1,
+            "prefecture": "Oti-Sud",
+            "commune": "Oti-Sud 1",
+            "canton": "Mogou",
+            "localite": "tchintcherega",
+            "lieu": "tchintcherega",
+            "coordonnee_x": "10,3989",
+            "coordonnee_y": "0,6011",
+            "entreprise": "BERT BTP",
+            "created_at": "2025-08-28 16:44:09"
+        },
+        {
+            "id": 5,
+            "projet_id": 1,
+            "prefecture": "Oti",
+            "commune": "Oti 1",
+            "canton": "Tambinamone",
+            "localite": "tambinamone",
+            "lieu": "tambinamone",
+            "coordonnee_x": "",
+            "coordonnee_y": "",
+            "entreprise": "BI la paix ",
+            "created_at": "2025-08-29 10:36:57"
+        },
+        {
+            "id": 6,
+            "projet_id": 1,
+            "prefecture": "Oti-Sud",
+            "commune": "Oti-Sud 1",
+            "canton": "Mogou",
+            "localite": "gbeti",
+            "lieu": "gbeti",
+            "coordonnee_x": "10,3970",
+            "coordonnee_y": "0,5797",
+            "entreprise": "Tchamie et Fils",
+            "created_at": "2025-09-04 12:34:04"
+        },
+        {
+            "id": 7,
+            "projet_id": 1,
+            "prefecture": "Oti-Sud",
+            "commune": "Oti-Sud 1",
+            "canton": "Gando",
+            "localite": "Sakou",
+            "lieu": "Sakou",
+            "coordonnee_x": "",
+            "coordonnee_y": "",
+            "entreprise": "SAWARI",
+            "created_at": "2025-10-02 16:09:56"
+        }
+    ],
+    "foration": [],
+    "pompage": [],
+    "ouvrages": [
+        {
+            "id": 1,
+            "projet_id": 1,
+            "localisation_id": 4,
+            "type_ouvrage": "PEA",
+            "numero_irh": "",
+            "annee": 2025,
+            "type_energie": "",
+            "type_reservoir": "Plastique (polyéthylène)",
+            "volume_reservoir": "",
+            "etat": "Bon état",
+            "cause_panne": "",
+            "observation": "",
+            "created_at": "2025-08-29 10:34:52"
+        },
+        {
+            "id": 2,
+            "projet_id": 1,
+            "localisation_id": 3,
+            "type_ouvrage": "PEA",
+            "numero_irh": "",
+            "annee": 2025,
+            "type_energie": "",
+            "type_reservoir": "Plastique (polyéthylène)",
+            "volume_reservoir": "",
+            "etat": "Bon état",
+            "cause_panne": "",
+            "observation": "",
+            "created_at": "2025-08-29 10:35:23"
+        },
+        {
+            "id": 3,
+            "projet_id": 1,
+            "localisation_id": 2,
+            "type_ouvrage": "PEA",
+            "numero_irh": "",
+            "annee": 2025,
+            "type_energie": "",
+            "type_reservoir": "Plastique (polyéthylène)",
+            "volume_reservoir": "",
+            "etat": "Bon état",
+            "cause_panne": "",
+            "observation": "",
+            "created_at": "2025-08-29 10:35:46"
+        },
+        {
+            "id": 4,
+            "projet_id": 1,
+            "localisation_id": 5,
+            "type_ouvrage": "PEA",
+            "numero_irh": "",
+            "annee": 2025,
+            "type_energie": "",
+            "type_reservoir": "Plastique (polyéthylène)",
+            "volume_reservoir": "",
+            "etat": "Bon état",
+            "cause_panne": "",
+            "observation": "",
+            "created_at": "2025-08-29 10:37:12"
+        },
+        {
+            "id": 5,
+            "projet_id": 1,
+            "localisation_id": 6,
+            "type_ouvrage": "PEA",
+            "numero_irh": "",
+            "annee": 2025,
+            "type_energie": "plaque solaire",
+            "type_reservoir": "Plastique (polyéthylène)",
+            "volume_reservoir": 10.0,
+            "etat": "Bon état",
+            "cause_panne": "",
+            "observation": "",
+            "created_at": "2025-09-04 14:28:50"
+        },
+        {
+            "id": 6,
+            "projet_id": 1,
+            "localisation_id": 1,
+            "type_ouvrage": "PEA",
+            "numero_irh": "",
+            "annee": 2025,
+            "type_energie": "",
+            "type_reservoir": "Plastique (polyéthylène)",
+            "volume_reservoir": "",
+            "etat": "Bon état",
+            "cause_panne": "",
+            "observation": "",
+            "created_at": "2025-09-05 08:41:32"
+        },
+        {
+            "id": 7,
+            "projet_id": 1,
+            "localisation_id": 7,
+            "type_ouvrage": "PEA",
+            "numero_irh": "",
+            "annee": 2025,
+            "type_energie": "Plaque solaire ",
+            "type_reservoir": "Plastique (polyéthylène)",
+            "volume_reservoir": 10.0,
+            "etat": "Bon état",
+            "cause_panne": "",
+            "observation": "",
+            "created_at": "2025-10-02 16:11:06"
+        }
+    ],
+    "suivi": [
+        {
+            "id": 1,
+            "ouvrage_id": 3,
+            "date_reception": "28/08/2025",
+            "type_reception": "Réception provisoir",
+            "participants": "",
+            "recommandation": "",
+            "observation": "reprendre l'abreuvoir ",
+            "created_at": "2025-09-02 12:15:02"
+        },
+        {
+            "id": 2,
+            "ouvrage_id": 2,
+            "date_reception": "28/08/2025",
+            "type_reception": "Réception provisoir",
+            "participants": "",
+            "recommandation": "",
+            "observation": "accepter ",
+            "created_at": "2025-09-02 12:16:26"
+        },
+        {
+            "id": 3,
+            "ouvrage_id": 1,
+            "date_reception": "28/08/2025",
+            "type_reception": "Réception provisoir",
+            "participants": "",
+            "recommandation": "",
+            "observation": "manques des semances, ",
+            "created_at": "2025-09-02 12:17:28"
+        },
+        {
+            "id": 4,
+            "ouvrage_id": 5,
+            "date_reception": "04/09/2025",
+            "type_reception": "Réception provisoir",
+            "participants": "",
+            "recommandation": "",
+            "observation": "Ras",
+            "created_at": "2025-09-04 16:24:26"
+        },
+        {
+            "id": 5,
+            "ouvrage_id": 7,
+            "date_reception": "01/10/2025",
+            "type_reception": "Réception provisoir",
+            "participants": "",
+            "recommandation": "",
+            "observation": "",
+            "created_at": "2025-10-02 16:11:42"
+        }
+    ],
+    "pannes": [
+        {
+            "id": 1,
+            "ouvrage_id": 1,
+            "date_signaler": "21/08/2025",
+            "description": "foration negatif",
+            "solution": "",
+            "observation": "",
+            "created_at": "2025-08-21 09:38:39"
+        }
+    ]
+}

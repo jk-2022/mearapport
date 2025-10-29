@@ -1,0 +1,148 @@
+{
+    "projets": [
+        {
+            "id": 1,
+            "name": "coso",
+            "title": "",
+            "created_at": "21/08/2025"
+        },
+        {
+            "id": 2,
+            "name": "pasco 3",
+            "title": "",
+            "created_at": "21/08/2025"
+        }
+    ],
+    "rapports": [],
+    "entreprise": [
+        {
+            "id": 1,
+            "nom": "jk btp",
+            "contact": "",
+            "created_at": "2025-08-21 08:53:45"
+        }
+    ],
+    "localisation": [
+        {
+            "id": 1,
+            "projet_id": 1,
+            "prefecture": "Oti-Sud",
+            "commune": "Oti-Sud 1",
+            "canton": "Mogou",
+            "localite": "tchapere",
+            "lieu": "tchapere",
+            "coordonnee_x": "",
+            "coordonnee_y": "",
+            "entreprise": "jk btp",
+            "created_at": "2025-08-21 08:53:48"
+        },
+        {
+            "id": 2,
+            "projet_id": 2,
+            "prefecture": "Oti-Sud",
+            "commune": "Oti-Sud 1",
+            "canton": "Mogou",
+            "localite": "Tchapere",
+            "lieu": "Epp tchapere",
+            "coordonnee_x": "",
+            "coordonnee_y": "",
+            "entreprise": "jk btp",
+            "created_at": "2025-08-21 12:22:31"
+        },
+        {
+            "id": 3,
+            "projet_id": 1,
+            "prefecture": "Oti-Sud",
+            "commune": "Oti-Sud 1",
+            "canton": "Mogou",
+            "localite": "ffff",
+            "lieu": "",
+            "coordonnee_x": "",
+            "coordonnee_y": "",
+            "entreprise": "jk btp",
+            "created_at": "2025-08-21 12:51:50"
+        }
+    ],
+    "foration": [],
+    "pompage": [],
+    "ouvrages": [
+        {
+            "id": 1,
+            "projet_id": 1,
+            "localisation_id": 1,
+            "type_ouvrage": "PMH",
+            "numero_irh": "",
+            "annee": 2000,
+            "type_energie": "",
+            "type_reservoir": null,
+            "volume_reservoir": "",
+            "etat": "Bon état",
+            "cause_panne": "",
+            "observation": "",
+            "created_at": "2025-08-21 09:37:48"
+        },
+        {
+            "id": 2,
+            "projet_id": 2,
+            "localisation_id": 2,
+            "type_ouvrage": "PEA",
+            "numero_irh": "",
+            "annee": 2008,
+            "type_energie": "plaque",
+            "type_reservoir": "Plastique (polyéthylène)",
+            "volume_reservoir": 5.0,
+            "etat": "Bon état",
+            "cause_panne": "",
+            "observation": "",
+            "created_at": "2025-08-21 12:24:01"
+        },
+        {
+            "id": 3,
+            "projet_id": 1,
+            "localisation_id": 3,
+            "type_ouvrage": "PMH en PEA",
+            "numero_irh": "",
+            "annee": 2011,
+            "type_energie": "",
+            "type_reservoir": null,
+            "volume_reservoir": "",
+            "etat": "Bon état",
+            "cause_panne": "",
+            "observation": "",
+            "created_at": "2025-08-21 12:52:46"
+        }
+    ],
+    "suivi": [
+        {
+            "id": 1,
+            "ouvrage_id": 1,
+            "date_reception": "21/08/2025",
+            "type_reception": "Réception provisoir",
+            "participants": "",
+            "recommandation": "",
+            "observation": "",
+            "created_at": "2025-08-21 11:07:51"
+        },
+        {
+            "id": 2,
+            "ouvrage_id": 3,
+            "date_reception": "21/08/2025",
+            "type_reception": "Réception definitive",
+            "participants": "",
+            "recommandation": "",
+            "observation": "",
+            "created_at": "2025-08-21 12:57:06"
+        }
+    ],
+    "pannes": [
+        {
+            "id": 1,
+            "ouvrage_id": 1,
+            "date_signaler": "21/08/2025",
+            "description": "foration negatif",
+            "solution": "",
+            "observation": "",
+            "created_at": "2025-08-21 09:38:39"
+        }
+    ]
+}
