@@ -3,13 +3,13 @@
 from flet import *
 
 from uix.customtitlelabel import CustomTitleLabel
-# from screens.staticscreen.tablecommune import TableCommune
+# from screens.staticscreen.tablecanton import TableCanton
 from .datatablestat import Mytable_ouvrage, tb_ouvrage
 
-class StatCommuneControl(Card):
-    def __init__(self, commune, stat_general):
+class StatCantonControl(Card):
+    def __init__(self, canton, stat_general):
         super().__init__()
-        self.tab_cnt_general=Column( expand=True, scroll=ScrollMode.ALWAYS )
+        self.tab_cnt_general=Column( expand=True )
         self.elevation=5
         self.stat_general=stat_general
         self.content=Container(
@@ -30,17 +30,17 @@ class StatCommuneControl(Card):
                     )
                 )
         
-        stat_commune=stat_general['par_type']
+        stat_canton=stat_general['par_type']
         tb_ouvrage.rows=[]
-        for types in stat_commune.keys():
+        for types in stat_canton.keys():
             tb_ouvrage.rows.append(
                         DataRow(
                             cells=[
                                 DataCell(Text(types)),
-                                DataCell(Text(stat_commune[types]['Bon état'])),
-                                DataCell(Text(stat_commune[types]['Panne'])),
-                                DataCell(Text(stat_commune[types]['Abandonné'])),
-                                DataCell(Text(stat_commune[types]['total_ouvrage'])),
+                                DataCell(Text(stat_canton[types]['Bon état'])),
+                                DataCell(Text(stat_canton[types]['Panne'])),
+                                DataCell(Text(stat_canton[types]['Abandonné'])),
+                                DataCell(Text(stat_canton[types]['total_ouvrage'])),
                             ]
                         )
                     )
@@ -49,7 +49,7 @@ class StatCommuneControl(Card):
                     Row(
                         [
                             Container(
-                                content=Text(f"{commune}")
+                                content=Text(f"{canton}")
                             )
                         ],alignment=MainAxisAlignment.CENTER,
                     
@@ -66,4 +66,4 @@ class StatCommuneControl(Card):
                 ]
             )
         self.tab_cnt_general.controls.append(cont)
-        # stat_commune={}
+        # stat_canton={}

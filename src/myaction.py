@@ -443,46 +443,36 @@ def recuperer_one_or_all_ouvrage(id):
     except Exception as e:
         print(e)
 
-# def export_data_base(file_name):
-#     conn = sqlite3.connect(path_db, check_same_thread=False)
-#     cursor = conn.cursor()
+def get_all_communes():
+    conn = sqlite3.connect(path_db, check_same_thread=False)
+    c = conn.cursor()
+    c.execute("""
+        SELECT DISTINCT commune 
+        FROM localisation
+        WHERE commune IS NOT NULL AND commune <> ''
+        ORDER BY commune ASC
+    """)
 
-#     # Obtenir les noms de toutes les tables
-#     cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'")
-#     tables = [row[0] for row in cursor.fetchall()]
+    communes = [row[0] for row in c.fetchall()]
 
-#     if tables:
-#         for table in tables:
-#             cursor.execute(f"SELECT * FROM {table}")
-#             rows = cursor.fetchall()
-#             col_names = [description[0] for description in cursor.description]
-#             data = [dict(zip(col_names, row)) for row in rows]
+    conn.close()
+    return communes
 
-#             with open(f"{ARCHIVES_PATH}/{table}_{file_name}.json", "w", encoding="utf-8") as f:
-#                 json.dump(data, f, ensure_ascii=False, indent=4)
+def get_all_cantons():
+    conn = sqlite3.connect(path_db, check_same_thread=False)
+    c = conn.cursor()
+    c.execute("""
+        SELECT DISTINCT canton 
+        FROM localisation
+        WHERE canton IS NOT NULL AND canton <> ''
+        ORDER BY canton ASC
+    """)
 
-#         conn.close()
-#         print("✅ Export terminé (fichier par table).")
+    cantons = [row[0] for row in c.fetchall()]
 
+    conn.close()
+    return cantons
 
-# def import_data_base(file_path,file_name):
-#     conn = sqlite3.connect(path_db, check_same_thread=False)
-#     cursor = conn.cursor()
-
-#     # Charger le fichier JSON
-#     with open(f"{file_path}", "r", encoding="utf-8") as f:
-#         data = json.load(f)
-
-#     # Insérer les données
-#     for row in data:
-#         columns = ', '.join(row.keys())
-#         placeholders = ', '.join('?' * len(row))
-#         values = list(row.values())
-#         sql = f"INSERT INTO {file_name} ({columns}) VALUES ({placeholders})"
-#         cursor.execute(sql, values)
-
-#     conn.commit()
-#     conn.close()
 #     print("✅ Import JSON vers SQLite réussi.")
 
 def import_json_to_sqlite(json_path: str):
@@ -701,185 +691,19 @@ def convert_to_dict(obj):
     return obj
 
 
-def get_stat_commune():
+from collections import defaultdict
+
+def get_stats_commune(nom_commune):
     conn = sqlite3.connect(path_db, check_same_thread=False)
     cursor = conn.cursor()
-
-    # --- Totaux globaux ---
-    cursor.execute("SELECT COUNT(*) FROM projets")
-    nombre_projet = cursor.fetchone()[0] or 0
-
-    cursor.execute("SELECT COUNT(DISTINCT commune) FROM localisation")
-    nombre_commune = cursor.fetchone()[0] or 0
-
-    cursor.execute("SELECT COUNT(DISTINCT canton) FROM localisation")
-    nombre_canton = cursor.fetchone()[0] or 0
-
-    cursor.execute("SELECT COUNT(*) FROM ouvrages")
-    total_ouvrages = cursor.fetchone()[0] or 0
-
-    # --- Totaux globaux par état ---
-    totals_par_etat = {"Bon état": 0, "Panne": 0, "Abandonné": 0}
-    cursor.execute("SELECT etat, COUNT(*) FROM ouvrages GROUP BY etat")
-    for etat_raw, cnt in cursor.fetchall():
-        etat = _norm(etat_raw)
-        totals_par_etat[etat] = totals_par_etat.get(etat, 0) + cnt
-
-    # --- par_type global ---
-    par_type = defaultdict(lambda: {"Bon état": 0, "Panne": 0, "Abandonné": 0, "total_ouvrage": 0})
-    cursor.execute("SELECT type_ouvrage, etat, COUNT(*) FROM ouvrages GROUP BY type_ouvrage, etat")
-    for type_raw, etat_raw, cnt in cursor.fetchall():
-        type_ = _norm(type_raw)
-        etat = _norm(etat_raw)
-        par_type[type_][etat] = par_type[type_].get(etat, 0) + cnt
-        par_type[type_]["total_ouvrage"] += cnt
-
-    # --- par_annee ---
-    par_annee = defaultdict(lambda: {
-        "total_ouvrages": 0,
-        "total_bon_etat": 0,
-        "total_panne": 0,
-        "total_abandonne": 0,
-        "par_type": defaultdict(lambda: {"Bon état": 0, "Panne": 0, "Abandonné": 0, "total_ouvrage": 0})
-    })
-
-    cursor.execute("SELECT annee, type_ouvrage, etat, COUNT(*) FROM ouvrages GROUP BY annee, type_ouvrage, etat")
-    for annee_raw, type_raw, etat_raw, cnt in cursor.fetchall():
-        annee = _norm(annee_raw)
-        type_ = _norm(type_raw)
-        etat = _norm(etat_raw)
-
-        par_annee[annee]["total_ouvrages"] += cnt
-        if etat == "Bon état":
-            par_annee[annee]["total_bon_etat"] += cnt
-        elif etat == "Panne":
-            par_annee[annee]["total_panne"] += cnt
-        elif etat == "Abandonné":
-            par_annee[annee]["total_abandonne"] += cnt
-
-        par_annee[annee]["par_type"][type_][etat] = par_annee[annee]["par_type"][type_].get(etat, 0) + cnt
-        par_annee[annee]["par_type"][type_]["total_ouvrage"] += cnt
-
-    # --- par_commune ---
-    par_commune = defaultdict(lambda: {
-        "total_ouvrages": 0,
-        "total_bon_etat": 0,
-        "total_panne": 0,
-        "total_abandonne": 0,
-        "par_type": defaultdict(lambda: {"Bon état": 0, "Panne": 0, "Abandonné": 0, "total_ouvrage": 0}),
-        "par_annee": defaultdict(lambda: {
-            "total_ouvrages": 0,
-            "total_bon_etat": 0,
-            "total_panne": 0,
-            "total_abandonne": 0,
-            "par_type": defaultdict(lambda: {"Bon état": 0, "Panne": 0, "Abandonné": 0, "total_ouvrage": 0})
-        })
-    })
-
-    # jointure pour récupérer commune (COUNT DISTINCT pour éviter doublons)
-    cursor.execute("""
-        SELECT l.commune, o.annee, o.type_ouvrage, o.etat, COUNT(DISTINCT o.id)
-        FROM ouvrages o
-        JOIN localisation l ON o.projet_id = l.projet_id
-        GROUP BY l.commune, o.annee, o.type_ouvrage, o.etat
-    """)
-
-    for commune_raw, annee_raw, type_raw, etat_raw, cnt in cursor.fetchall():
-        commune = _norm(commune_raw)
-        annee = _norm(annee_raw)
-        type_ = _norm(type_raw)
-        etat = _norm(etat_raw)
-
-        # Totaux par commune
-        par_commune[commune]["total_ouvrages"] += cnt
-        if etat == "Bon état":
-            par_commune[commune]["total_bon_etat"] += cnt
-        elif etat == "Panne":
-            par_commune[commune]["total_panne"] += cnt
-        elif etat == "Abandonné":
-            par_commune[commune]["total_abandonne"] += cnt
-
-        par_commune[commune]["par_type"][type_][etat] += cnt
-        par_commune[commune]["par_type"][type_]["total_ouvrage"] += cnt
-
-        # Totaux par année dans chaque commune
-        par_commune[commune]["par_annee"][annee]["total_ouvrages"] += cnt
-        if etat == "Bon état":
-            par_commune[commune]["par_annee"][annee]["total_bon_etat"] += cnt
-        elif etat == "Panne":
-            par_commune[commune]["par_annee"][annee]["total_panne"] += cnt
-        elif etat == "Abandonné":
-            par_commune[commune]["par_annee"][annee]["total_abandonne"] += cnt
-
-        par_commune[commune]["par_annee"][annee]["par_type"][type_][etat] += cnt
-        par_commune[commune]["par_annee"][annee]["par_type"][type_]["total_ouvrage"] += cnt
-
-    conn.close()
-
-    # --- Trie des années en décroissant ---
-    def year_key(k):
-        if str(k).isdigit():
-            return (0, int(k))
-        return (1, str(k))
-
-    def order_par_annee(d):
-        ordered = {}
-        for y in sorted(d.keys(), key=year_key, reverse=True):
-            v = d[y]
-            ordered[y] = {
-                "total_ouvrages": v["total_ouvrages"],
-                "total_bon_etat": v["total_bon_etat"],
-                "total_panne": v["total_panne"],
-                "total_abandonne": v["total_abandonne"],
-                "par_type": {t: dict(tv) for t, tv in v["par_type"].items()}
-            }
-        return ordered
-
-    # conversion en dict classique
-    par_type = {t: dict(v) for t, v in par_type.items()}
-    par_annee = order_par_annee(par_annee)
-
-    par_commune_final = {}
-    for c, cv in par_commune.items():
-        par_commune_final[c] = {
-            "total_ouvrages": cv["total_ouvrages"],
-            "total_bon_etat": cv["total_bon_etat"],
-            "total_panne": cv["total_panne"],
-            "total_abandonne": cv["total_abandonne"],
-            "par_type": {t: dict(v) for t, v in cv["par_type"].items()},
-            "par_annee": order_par_annee(cv["par_annee"])
-        }
-
-    # --- Résultat final ---
-    result = {
-        "nombre_projet": nombre_projet,
-        "nombre_commune": nombre_commune,
-        "nombre_canton": nombre_canton,
-        "total_ouvrages": total_ouvrages,
-        "total_bon_etat": totals_par_etat.get("Bon état", 0),
-        "total_panne": totals_par_etat.get("Panne", 0),
-        "total_abandonne": totals_par_etat.get("Abandonné", 0),
-        "par_type": par_type,
-        "par_annee": par_annee,
-        "par_commune": par_commune_final
-    }
-
-    return result
-
-
-
-def _norm(s):
-    """Nettoie les chaînes (supprime espaces, None -> 'Inconnue')."""
-    if s is None:
-        return "Inconnue"
-    return str(s).strip()
-
-def get_stats_canton():
-    conn = sqlite3.connect(path_db, check_same_thread=False)
-    cursor = conn.cursor()
-
-    # --- Stats par canton ---
-    stats_canton = defaultdict(lambda: {
+    """
+    Récupère les stats pour UNE commune donnée.
+    Accepts either a sqlite3.Connection or a sqlite3.Cursor as first arg.
+    Exemple: get_stats_commune(conn, "Tône 4") ou get_stats_commune(cursor, "Tône 4")
+    """
+   
+    # structure de travail
+    stats = {
         "total_ouvrages": 0,
         "total_bon_etat": 0,
         "total_panne": 0,
@@ -896,77 +720,205 @@ def get_stats_canton():
                 "Bon état": 0, "Panne": 0, "Abandonné": 0, "total_ouvrage": 0
             })
         })
-    })
+    }
 
-    # Requête avec COUNT DISTINCT pour éviter doublons
+    # Requête CORRIGÉE : JOIN sur localisation.id via o.localisation_id
     cursor.execute("""
-        SELECT l.canton, o.annee, o.type_ouvrage, o.etat, COUNT(DISTINCT o.id)
+        SELECT o.annee, o.type_ouvrage, o.etat, COUNT(DISTINCT o.id) as cnt
         FROM ouvrages o
-        JOIN localisation l ON o.projet_id = l.projet_id
-        GROUP BY l.canton, o.annee, o.type_ouvrage, o.etat
-    """)
+        JOIN localisation l ON o.localisation_id = l.id
+        WHERE l.commune = ?
+        GROUP BY o.annee, o.type_ouvrage, o.etat
+    """, (nom_commune,))
 
-    for canton_raw, annee_raw, type_raw, etat_raw, cnt in cursor.fetchall():
-        canton = _norm(canton_raw)
+    rows = cursor.fetchall()
+
+    # si aucune ligne, on retourne la structure vide (0)
+    if not rows:
+        # normaliser clés vides: convertir defaultdict en dict vide
+        return {
+            "total_ouvrages": 0,
+            "total_bon_etat": 0,
+            "total_panne": 0,
+            "total_abandonne": 0,
+            "par_type": {},
+            "par_annee": {}
+        }
+
+    # traitement
+    for annee_raw, type_raw, etat_raw, cnt in rows:
         annee = _norm(annee_raw)
         type_ = _norm(type_raw)
         etat = _norm(etat_raw)
+        count = int(cnt or 0)
 
-        # Totaux par canton
-        stats_canton[canton]["total_ouvrages"] += cnt
+        stats["total_ouvrages"] += count
         if etat == "Bon état":
-            stats_canton[canton]["total_bon_etat"] += cnt
+            stats["total_bon_etat"] += count
         elif etat == "Panne":
-            stats_canton[canton]["total_panne"] += cnt
+            stats["total_panne"] += count
         elif etat == "Abandonné":
-            stats_canton[canton]["total_abandonne"] += cnt
+            stats["total_abandonne"] += count
 
-        stats_canton[canton]["par_type"][type_][etat] += cnt
-        stats_canton[canton]["par_type"][type_]["total_ouvrage"] += cnt
+        # par type
+        stats["par_type"][type_][etat] += count
+        stats["par_type"][type_]["total_ouvrage"] += count
 
-        # Par année
-        stats_canton[canton]["par_annee"][annee]["total_ouvrages"] += cnt
+        # par année
+        y = stats["par_annee"][annee]
+        y["total_ouvrages"] += count
         if etat == "Bon état":
-            stats_canton[canton]["par_annee"][annee]["total_bon_etat"] += cnt
+            y["total_bon_etat"] += count
         elif etat == "Panne":
-            stats_canton[canton]["par_annee"][annee]["total_panne"] += cnt
+            y["total_panne"] += count
         elif etat == "Abandonné":
-            stats_canton[canton]["par_annee"][annee]["total_abandonne"] += cnt
+            y["total_abandonne"] += count
 
-        stats_canton[canton]["par_annee"][annee]["par_type"][type_][etat] += cnt
-        stats_canton[canton]["par_annee"][annee]["par_type"][type_]["total_ouvrage"] += cnt
+        y["par_type"][type_][etat] += count
+        y["par_type"][type_]["total_ouvrage"] += count
 
-    conn.close()
+    # conversion finale : supprimer defaultdict
+    final = {
+        "total_ouvrages": stats["total_ouvrages"],
+        "total_bon_etat": stats["total_bon_etat"],
+        "total_panne": stats["total_panne"],
+        "total_abandonne": stats["total_abandonne"],
+        "par_type": {},
+        "par_annee": {}
+    }
 
-    # --- Trie des années en décroissant ---
-    def year_key(k):
-        if str(k).isdigit():
-            return (0, int(k))
-        return (1, str(k))
+    for typ, d in stats["par_type"].items():
+        final["par_type"][typ] = dict(d)
 
-    def order_par_annee(d):
-        ordered = {}
-        for y in sorted(d.keys(), key=year_key, reverse=True):
-            v = d[y]
-            ordered[y] = {
-                "total_ouvrages": v["total_ouvrages"],
-                "total_bon_etat": v["total_bon_etat"],
-                "total_panne": v["total_panne"],
-                "total_abandonne": v["total_abandonne"],
-                "par_type": {t: dict(tv) for t, tv in v["par_type"].items()}
-            }
-        return ordered
-
-    # Conversion finale en dict simple
-    final_stats = {}
-    for canton, data in stats_canton.items():
-        final_stats[canton] = {
-            "total_ouvrages": data["total_ouvrages"],
-            "total_bon_etat": data["total_bon_etat"],
-            "total_panne": data["total_panne"],
-            "total_abandonne": data["total_abandonne"],
-            "par_type": {t: dict(v) for t, v in data["par_type"].items()},
-            "par_annee": order_par_annee(data["par_annee"])
+    # tri décroissant des années (essaye de trier numériquement si possible)
+    def year_key(y):
+        try:
+            return int(y)
+        except Exception:
+            return y
+    for annee in sorted(stats["par_annee"].keys(), key=year_key, reverse=True):
+        y = stats["par_annee"][annee]
+        final["par_annee"][annee] = {
+            "total_ouvrages": y["total_ouvrages"],
+            "total_bon_etat": y["total_bon_etat"],
+            "total_panne": y["total_panne"],
+            "total_abandonne": y["total_abandonne"],
+            "par_type": {t: dict(dd) for t, dd in y["par_type"].items()}
         }
 
-    return final_stats
+    return final
+
+
+def get_stats_canton(nom_canton):
+    conn = sqlite3.connect(path_db, check_same_thread=False)
+    cursor = conn.cursor()
+
+    # ---------------------------------------------------------
+    # 1) Préparer la structure des résultats
+    # ---------------------------------------------------------
+    stats = {
+        "total_ouvrages": 0,
+        "total_bon_etat": 0,
+        "total_panne": 0,
+        "total_abandonne": 0,
+
+        "par_type": {},
+        "par_annee": {}
+    }
+
+    # ---------------------------------------------------------
+    # 2) Récupérer toutes les lignes correspondant au canton
+    # ---------------------------------------------------------
+    cursor.execute("""
+        SELECT 
+            o.annee,
+            o.type_ouvrage,
+            o.etat,
+            COUNT(DISTINCT o.id)
+        FROM ouvrages o
+        JOIN localisation l ON o.localisation_id = l.id
+        WHERE l.canton = ?
+        GROUP BY o.annee, o.type_ouvrage, o.etat
+    """, (nom_canton,))
+
+    rows = cursor.fetchall()
+
+    # ---------------------------------------------------------
+    # 3) Si aucun ouvrage trouvé → renvoyer structure vide
+    # ---------------------------------------------------------
+    if not rows:
+        conn.close()
+        return stats
+
+    # ---------------------------------------------------------
+    # 4) Traitement des lignes trouvées
+    # ---------------------------------------------------------
+    for annee, type_o, etat, count in rows:
+
+        # ---------- Général ----------
+        stats["total_ouvrages"] += count
+
+        if etat == "Bon état":
+            stats["total_bon_etat"] += count
+        elif etat == "Panne":
+            stats["total_panne"] += count
+        elif etat == "Abandonné":
+            stats["total_abandonne"] += count
+
+        # ---------- Par type ----------
+        if type_o not in stats["par_type"]:
+            stats["par_type"][type_o] = {
+                "Bon état": 0,
+                "Panne": 0,
+                "Abandonné": 0,
+                "total_ouvrage": 0
+            }
+
+        stats["par_type"][type_o][etat] += count
+        stats["par_type"][type_o]["total_ouvrage"] += count
+
+        # ---------- Par année ----------
+        if annee not in stats["par_annee"]:
+            stats["par_annee"][annee] = {
+                "total_ouvrages": 0,
+                "total_bon_etat": 0,
+                "total_panne": 0,
+                "total_abandonne": 0,
+                "par_type": {}
+            }
+
+        stats["par_annee"][annee]["total_ouvrages"] += count
+        if etat == "Bon état":
+            stats["par_annee"][annee]["total_bon_etat"] += count
+        elif etat == "Panne":
+            stats["par_annee"][annee]["total_panne"] += count
+        elif etat == "Abandonné":
+            stats["par_annee"][annee]["total_abandonne"] += count
+
+        # --- par type dans par_annee ---
+        if type_o not in stats["par_annee"][annee]["par_type"]:
+            stats["par_annee"][annee]["par_type"][type_o] = {
+                "Bon état": 0,
+                "Panne": 0,
+                "Abandonné": 0,
+                "total_ouvrage": 0
+            }
+
+        stats["par_annee"][annee]["par_type"][type_o][etat] += count
+        stats["par_annee"][annee]["par_type"][type_o]["total_ouvrage"] += count
+
+    # ---------------------------------------------------------
+    # 5) Trier les années par ordre décroissant
+    # ---------------------------------------------------------
+    stats["par_annee"] = dict(sorted(stats["par_annee"].items(), reverse=True))
+
+    conn.close()
+    return stats
+
+
+def _norm(s):
+    """Nettoie les chaînes (supprime espaces, None -> 'Inconnue')."""
+    if s is None:
+        return "Inconnue"
+    return str(s).strip()
+

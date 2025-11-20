@@ -19,6 +19,7 @@ class StaticView(View):
         ],expand=True,border_color=Colors.WHITE54 if self.page.theme_mode==ThemeMode.DARK else Colors.BLACK38,
         on_change=self.show_tab_stat_by_commune)
         stats_gen_and_comm = get_stat_commune() #la fonction renvoie tout en générale
+        # print('stats_gen_and_comm', stats_gen_and_comm)
         self.stats_com=stats_gen_and_comm['par_commune']
         for key in self.stats_com.keys():
             self.commune.options.append(dropdown.Option(key))
@@ -31,7 +32,7 @@ class StaticView(View):
         for key in self.stats_canton.keys():
             self.canton.options.append(dropdown.Option(key))
             
-        self.general_cnt=Column()
+        self.general_cnt=Column(expand=True, scroll=ScrollMode.ALWAYS)
         self.commune_res_cont=Column()
         self.commune_res_annee_cont=Column()
         self.commune_cnt=Column(
@@ -40,7 +41,7 @@ class StaticView(View):
                 self.commune,
                 self.commune_res_cont,
                 self.commune_res_annee_cont,
-            ],spacing=0
+            ],spacing=0, expand=True, scroll=ScrollMode.ALWAYS
         )
 
         self.canton_res_cont=Column()
@@ -51,7 +52,7 @@ class StaticView(View):
                 self.canton,
                 self.canton_res_cont,
                 self.canton_res_annee_cont,
-            ],spacing=0
+            ],spacing=0,expand=True, scroll=ScrollMode.ALWAYS
         )
 
 
@@ -94,6 +95,7 @@ class StaticView(View):
 
     def get_stat(self):
         stats_gen = get_statistiques()
+        # print('stats_gen', stats_gen)
         if stats_gen:
             cont_gen=StatGeneralControl(page=self.page, stat_general=stats_gen)
             cont_ann=StatAnneeControl(page=self.page, stat_general=stats_gen)

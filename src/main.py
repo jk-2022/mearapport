@@ -33,12 +33,20 @@ def main(page: Page):
             page.views.append(RecapOuvrageView(page))
         elif page.route == "/filtrer-ouvrage":
             page.views.append(FiltreOuvrageView(page))
-        elif page.route == "/statics":
-            page.views.append(StaticView(page))
+        elif page.route == "/stats":
+            page.views.append(StatView(page))
+        elif page.route == "/statgeneral":
+            page.views.append(StatGeneralView(page))
+        elif page.route == "/statcommune":
+            page.views.append(StatCommuneView(page))
+        elif page.route == "/statcanton":
+            page.views.append(StatCantonView(page))
         elif page.route == "/apropos":
             page.views.append(ApropoView(page))
         elif page.route == "/settings":
             page.views.append(SettingView(page))
+        # elif page.route == "/statics":
+        #     page.views.append(StaticView(page))
         page.update()
 
     def on_view_pop(e: ViewPopEvent):

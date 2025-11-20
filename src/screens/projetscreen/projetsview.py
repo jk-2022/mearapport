@@ -78,7 +78,8 @@ class ProjectView(View):
         self.page.update()
         
     def go_to_static(self, e):
-        self.page.go("/statics")
+        self.page.go("/stats")
+        # self.page.go("/statics")
         
     def close_dlg(self, e):
         self.page.close(self.dlg_modal)
