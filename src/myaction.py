@@ -274,20 +274,6 @@ def recuperer_liste_projets():
     except Exception as e:
         print(e)
         
-# def recuperer_liste_rapports(project_id):
-#     conn = sqlite3.connect(path_db, check_same_thread=False)
-#     try:
-#         c = conn.cursor()
-#         c.execute("""
-#             SELECT id, title, content, rapport_date, created_at 
-#             FROM rapports 
-#             WHERE projet_id = ? 
-#             ORDER BY created_at DESC
-#         """, (project_id,))
-#         rapports = c.fetchall()
-#         return rapports
-#     except Exception as e:
-#         print(e)
 
 def recuperer_liste_localisation_by_projet(projet_id):
     conn = sqlite3.connect(path_db, check_same_thread=False)
@@ -524,10 +510,6 @@ def import_json_to_sqlite(json_path: str):
         conn.close()
 
 
-# Exemple d’utilisation
-# import_json_to_sqlite("backup.json", "restored.db")
-
-
 def export_sqlite_to_json(file_name):
     """
     Exporte toute la base SQLite3 en JSON.
@@ -593,7 +575,7 @@ def get_statistiques():
     total_ouvrages = cursor.fetchone()[0] or 0
 
     # --- Totaux par état (depuis ouvrages) ---
-    totals_par_etat = {"Bon état": 0, "Panne": 0, "Abandonné": 0}
+    totals_par_etat = {"Bon état": 0, "En panne": 0, "Abandonné": 0}
     cursor.execute("SELECT etat, COUNT(*) FROM ouvrages GROUP BY etat")
     for etat_raw, cnt in cursor.fetchall():
         etat = _norm(etat_raw)
@@ -603,7 +585,7 @@ def get_statistiques():
             totals_par_etat[etat] += cnt
 
     # --- par_type (calculé uniquement depuis ouvrages pour éviter doublons) ---
-    par_type = defaultdict(lambda: {"Bon état": 0, "Panne": 0, "Abandonné": 0, "total_ouvrage": 0})
+    par_type = defaultdict(lambda: {"Bon état": 0, "En panne": 0, "Abandonné": 0, "total_ouvrage": 0})
     cursor.execute("SELECT type_ouvrage, etat, COUNT(*) FROM ouvrages GROUP BY type_ouvrage, etat")
     for type_raw, etat_raw, cnt in cursor.fetchall():
         type_ = _norm(type_raw)
@@ -617,7 +599,7 @@ def get_statistiques():
         "total_bon_etat": 0,
         "total_panne": 0,
         "total_abandonne": 0,
-        "par_type": defaultdict(lambda: {"Bon état": 0, "Panne": 0, "Abandonné": 0, "total_ouvrage": 0})
+        "par_type": defaultdict(lambda: {"Bon état": 0, "En panne": 0, "Abandonné": 0, "total_ouvrage": 0})
     })
 
     cursor.execute("SELECT annee, type_ouvrage, etat, COUNT(*) FROM ouvrages GROUP BY annee, type_ouvrage, etat")
@@ -629,7 +611,7 @@ def get_statistiques():
         par_annee[annee]["total_ouvrages"] += cnt
         if etat == "Bon état":
             par_annee[annee]["total_bon_etat"] += cnt
-        elif etat == "Panne":
+        elif etat == "En panne":
             par_annee[annee]["total_panne"] += cnt
         elif etat == "Abandonné":
             par_annee[annee]["total_abandonne"] += cnt
@@ -673,7 +655,7 @@ def get_statistiques():
         "nombre_canton": nombre_canton,
         "total_ouvrages": total_ouvrages,
         "total_bon_etat": totals_par_etat.get("Bon état", 0),
-        "total_panne": totals_par_etat.get("Panne", 0),
+        "total_panne": totals_par_etat.get("En panne", 0),
         "total_abandonne": totals_par_etat.get("Abandonné", 0),
         "par_type": par_type,
         "par_annee": par_annee_ordered
@@ -709,7 +691,7 @@ def get_stats_commune(nom_commune):
         "total_panne": 0,
         "total_abandonne": 0,
         "par_type": defaultdict(lambda: {
-            "Bon état": 0, "Panne": 0, "Abandonné": 0, "total_ouvrage": 0
+            "Bon état": 0, "En panne": 0, "Abandonné": 0, "total_ouvrage": 0
         }),
         "par_annee": defaultdict(lambda: {
             "total_ouvrages": 0,
@@ -717,7 +699,7 @@ def get_stats_commune(nom_commune):
             "total_panne": 0,
             "total_abandonne": 0,
             "par_type": defaultdict(lambda: {
-                "Bon état": 0, "Panne": 0, "Abandonné": 0, "total_ouvrage": 0
+                "Bon état": 0, "En panne": 0, "Abandonné": 0, "total_ouvrage": 0
             })
         })
     }
@@ -755,7 +737,7 @@ def get_stats_commune(nom_commune):
         stats["total_ouvrages"] += count
         if etat == "Bon état":
             stats["total_bon_etat"] += count
-        elif etat == "Panne":
+        elif etat == "En panne":
             stats["total_panne"] += count
         elif etat == "Abandonné":
             stats["total_abandonne"] += count
@@ -769,7 +751,7 @@ def get_stats_commune(nom_commune):
         y["total_ouvrages"] += count
         if etat == "Bon état":
             y["total_bon_etat"] += count
-        elif etat == "Panne":
+        elif etat == "En panne":
             y["total_panne"] += count
         elif etat == "Abandonné":
             y["total_abandonne"] += count
@@ -860,7 +842,7 @@ def get_stats_canton(nom_canton):
 
         if etat == "Bon état":
             stats["total_bon_etat"] += count
-        elif etat == "Panne":
+        elif etat == "En panne":
             stats["total_panne"] += count
         elif etat == "Abandonné":
             stats["total_abandonne"] += count
@@ -869,7 +851,7 @@ def get_stats_canton(nom_canton):
         if type_o not in stats["par_type"]:
             stats["par_type"][type_o] = {
                 "Bon état": 0,
-                "Panne": 0,
+                "En panne": 0,
                 "Abandonné": 0,
                 "total_ouvrage": 0
             }
@@ -890,7 +872,7 @@ def get_stats_canton(nom_canton):
         stats["par_annee"][annee]["total_ouvrages"] += count
         if etat == "Bon état":
             stats["par_annee"][annee]["total_bon_etat"] += count
-        elif etat == "Panne":
+        elif etat == "En panne":
             stats["par_annee"][annee]["total_panne"] += count
         elif etat == "Abandonné":
             stats["par_annee"][annee]["total_abandonne"] += count
@@ -899,7 +881,7 @@ def get_stats_canton(nom_canton):
         if type_o not in stats["par_annee"][annee]["par_type"]:
             stats["par_annee"][annee]["par_type"][type_o] = {
                 "Bon état": 0,
-                "Panne": 0,
+                "En panne": 0,
                 "Abandonné": 0,
                 "total_ouvrage": 0
             }

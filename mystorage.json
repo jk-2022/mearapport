@@ -7,37 +7,49 @@
         "created_at": "21/08/2025"
     },
     "local": {
-        "id": 8,
+        "id": 10,
         "projet_id": 1,
-        "prefecture": "Oti",
-        "commune": "Oti 1",
-        "canton": "x1",
-        "localite": "l1",
-        "lieu": "l1",
+        "prefecture": "Kpendjal",
+        "commune": "Kpendjal 1",
+        "canton": "x3",
+        "localite": "l3",
+        "lieu": "",
         "coordonnee_x": "",
         "coordonnee_y": "",
-        "entreprise": "Tchamie et Fils",
-        "created_at": "2025-11-19 08:47:26"
+        "entreprise": "BI la paix ",
+        "created_at": "2025-11-21 04:21:42"
     },
-    "ouvrage_id": 4,
+    "ouvrage_id": 10,
     "stats_gen": {
         "nombre_projet": 1,
-        "nombre_commune": 2,
-        "nombre_canton": 4,
-        "total_ouvrages": 8,
+        "nombre_commune": 4,
+        "nombre_canton": 6,
+        "total_ouvrages": 10,
         "total_bon_etat": 8,
-        "total_panne": 0,
-        "total_abandonne": 0,
+        "total_panne": 1,
+        "total_abandonne": 1,
         "par_type": {
+            "AEP": {
+                "Bon état": 0,
+                "En panne": 1,
+                "Abandonné": 0,
+                "total_ouvrage": 1
+            },
+            "Mini AEP": {
+                "Bon état": 0,
+                "En panne": 0,
+                "Abandonné": 1,
+                "total_ouvrage": 1
+            },
             "PEA": {
                 "Bon état": 7,
-                "Panne": 0,
+                "En panne": 0,
                 "Abandonné": 0,
                 "total_ouvrage": 7
             },
             "PMH": {
                 "Bon état": 1,
-                "Panne": 0,
+                "En panne": 0,
                 "Abandonné": 0,
                 "total_ouvrage": 1
             }
@@ -51,7 +63,7 @@
                 "par_type": {
                     "PEA": {
                         "Bon état": 7,
-                        "Panne": 0,
+                        "En panne": 0,
                         "Abandonné": 0,
                         "total_ouvrage": 7
                     }
@@ -65,8 +77,28 @@
                 "par_type": {
                     "PMH": {
                         "Bon état": 1,
-                        "Panne": 0,
+                        "En panne": 0,
                         "Abandonné": 0,
+                        "total_ouvrage": 1
+                    }
+                }
+            },
+            "2023": {
+                "total_ouvrages": 2,
+                "total_bon_etat": 0,
+                "total_panne": 1,
+                "total_abandonne": 1,
+                "par_type": {
+                    "AEP": {
+                        "Bon état": 0,
+                        "En panne": 1,
+                        "Abandonné": 0,
+                        "total_ouvrage": 1
+                    },
+                    "Mini AEP": {
+                        "Bon état": 0,
+                        "En panne": 0,
+                        "Abandonné": 1,
                         "total_ouvrage": 1
                     }
                 }

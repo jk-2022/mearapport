@@ -38,7 +38,7 @@ class StatCantonControl(Card):
                             cells=[
                                 DataCell(Text(types)),
                                 DataCell(Text(stat_canton[types]['Bon état'])),
-                                DataCell(Text(stat_canton[types]['Panne'])),
+                                DataCell(Text(stat_canton[types]['En panne'])),
                                 DataCell(Text(stat_canton[types]['Abandonné'])),
                                 DataCell(Text(stat_canton[types]['total_ouvrage'])),
                             ]

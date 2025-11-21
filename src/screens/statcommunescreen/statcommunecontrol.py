@@ -38,7 +38,7 @@ class StatCommuneControl(Card):
                             cells=[
                                 DataCell(Text(types)),
                                 DataCell(Text(stat_commune[types]['Bon état'])),
-                                DataCell(Text(stat_commune[types]['Panne'])),
+                                DataCell(Text(stat_commune[types]['En panne'])),
                                 DataCell(Text(stat_commune[types]['Abandonné'])),
                                 DataCell(Text(stat_commune[types]['total_ouvrage'])),
                             ]

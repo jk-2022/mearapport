@@ -51,7 +51,7 @@ class StatGeneralControl(Card):
                             cells=[
                                 DataCell(Text(types)),
                                 DataCell(Text(stat_general['par_type'][types]['Bon état'])),
-                                DataCell(Text(stat_general['par_type'][types]['Panne'])),
+                                DataCell(Text(stat_general['par_type'][types]['En panne'])),
                                 DataCell(Text(stat_general['par_type'][types]['Abandonné'])),
                                 DataCell(Text(stat_general['par_type'][types]['total_ouvrage'])),
                             ]

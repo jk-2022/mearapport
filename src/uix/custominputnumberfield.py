@@ -13,8 +13,8 @@ class CustomInputNumberField(TextField):
         self.cursor_height=12
         self.cursor_width=1
         self.width=width
-        self.cursor_color="white"
-        self.color="white"
+        # self.cursor_color="white"
+        # self.color="white"
         self.content_padding=padding.only(left=5, right=5)
         # self.text_size=11
         self.value=value

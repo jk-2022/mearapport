@@ -35,6 +35,7 @@ class StatAnneeCommuneControl(Card):
        
     def show_tab_stat_by_annee(self,e):
         annee=e.control.value
+        print(type(annee))
         data_annee=self.stat_general['par_annee'][annee]
         tb_annee.rows=[]
         self.tab_cnt_annee.controls.clear()
@@ -44,7 +45,7 @@ class StatAnneeCommuneControl(Card):
                             cells=[
                                 DataCell(Text(types)),
                                 DataCell(Text(data_annee['par_type'][types]['Bon état'])),
-                                DataCell(Text(data_annee['par_type'][types]['Panne'])),
+                                DataCell(Text(data_annee['par_type'][types]['En panne'])),
                                 DataCell(Text(data_annee['par_type'][types]['Abandonné'])),
                                 DataCell(Text(data_annee['par_type'][types]['total_ouvrage'])),
                             ]

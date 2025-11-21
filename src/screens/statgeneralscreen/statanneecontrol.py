@@ -44,7 +44,7 @@ class StatAnneeControl(Card):
                             cells=[
                                 DataCell(Text(types)),
                                 DataCell(Text(data_annee['par_type'][types]['Bon état'])),
-                                DataCell(Text(data_annee['par_type'][types]['Panne'])),
+                                DataCell(Text(data_annee['par_type'][types]['En panne'])),
                                 DataCell(Text(data_annee['par_type'][types]['Abandonné'])),
                                 DataCell(Text(data_annee['par_type'][types]['total_ouvrage'])),
                             ]
