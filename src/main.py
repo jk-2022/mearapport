@@ -45,8 +45,8 @@ def main(page: Page):
             page.views.append(ApropoView(page))
         elif page.route == "/settings":
             page.views.append(SettingView(page))
-        # elif page.route == "/statics":
-        #     page.views.append(StaticView(page))
+        elif page.route == "/intervaldate":
+            page.views.append(IntervalDateView(page))
         page.update()
 
     def on_view_pop(e: ViewPopEvent):

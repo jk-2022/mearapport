@@ -36,12 +36,17 @@ class LocalCard(Card):
                             expand=True,
                             content=Column(
                                 [
-                                    Row(
-                                        [
-                                            Text(f"Lieu : {local['lieu']} / Localité : {local['localite']} / canton : {local['canton']} / Commune : {local['commune']}", size=11, weight=FontWeight.W_300),
-                                        ]
-                                    ),
-                                    Text(f"Entreprise : {local['entreprise']} / coordonnées : {local['coordonnee_x']};{local['coordonnee_y']}", size=11, weight=FontWeight.W_300),
+                                    
+                                    Container(
+                                        width=self.page.window.width-60,
+                                        content=Text(f"Lieu : {local['lieu']} / Localité : {local['localite']} / canton : {local['canton']} / Commune : {local['commune']}", size=11, weight=FontWeight.W_500),
+                                        padding=0
+                                        ),
+                                    Container(
+                                        width=self.page.window.width-60,
+                                        content=Text(f"Entreprise : {local['entreprise']} / coordonnées : {local['coordonnee_x']};{local['coordonnee_y']}", size=11, weight=FontWeight.W_300),
+                                        padding=0
+                                        ),
                                     Row(
                                         [
                                             IconButton(icon=Icons.EDIT, on_click=self.show_edit_local),

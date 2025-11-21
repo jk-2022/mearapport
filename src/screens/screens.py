@@ -9,7 +9,8 @@ from .statcantonscreen.statcantonview import StatCantonView
 from .statscreen.statview import StatView
 from .settingscreen.settingview import SettingView
 from .aproposcreen.apropoview import ApropoView
-# from .staticscreen.staticview import StaticView
+from .intervaldatescreen.intervaldateview import IntervalDateView
+
 # from .rapportscreen.rapportview import RapportView
 # from .plagescreen.plageview import PlageView
 # from .archivescreen.archiveview import ArchiveView

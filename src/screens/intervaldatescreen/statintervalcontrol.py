@@ -6,22 +6,21 @@ from uix.customtitlelabel import CustomTitleLabel
 # from screens.staticscreen.tablecommune import TableCommune
 from .datatablestat import Mytable_ouvrage, tb_ouvrage
 
-class StatCommuneControl(Card):
-    def __init__(self, commune, stat_general):
+class StatIntervalControl(Card):
+    def __init__(self, stats_data):
         super().__init__()
         self.tab_cnt_general=Column( expand=True, scroll=ScrollMode.ALWAYS )
         self.elevation=5
-        self.stat_general=stat_general
+        self.stats_data=stats_data
         self.content=Container(
             # on_click=lambda e: self.selectprojet(e),
             padding=padding.all(10),
             expand=True,
             content=Column(
-                        [
-                            Row(
+                        [   Row(
                                 [
                                     Container(
-                                        content=Text(f"Statsistiques pour", size=11, italic=True),alignment=alignment.center
+                                        content=Text(f"Statsistiques par intervalle de date", size=11, italic=True),alignment=alignment.center
                                     )
                                 ],alignment=MainAxisAlignment.CENTER
                             ),
@@ -30,17 +29,29 @@ class StatCommuneControl(Card):
                     )
                 )
         
-        stat_commune=stat_general['par_type']
+        stats=stats_data['par_type_global']['par_type']
+        stats_commune=stats_data['par_commune']
+        texte_commune=''
+        for commune in stats_commune.keys():
+            texte_commune+=f"{commune}/"
+        texte_commune=texte_commune[:-1]
+    
+        stats_canton=stats_data['par_canton']
+        texte_canton=''
+        for canton in stats_canton.keys():
+            texte_canton+=f"{canton}/"
+        texte_canton=texte_canton[:-1]
+        
         tb_ouvrage.rows=[]
-        for types in stat_commune.keys():
+        for types in stats.keys():
             tb_ouvrage.rows.append(
                         DataRow(
                             cells=[
                                 DataCell(Text(types)),
-                                DataCell(Text(stat_commune[types]['Bon état'])),
-                                DataCell(Text(stat_commune[types]['Panne'])),
-                                DataCell(Text(stat_commune[types]['Abandonné'])),
-                                DataCell(Text(stat_commune[types]['total_ouvrage'])),
+                                DataCell(Text(stats[types]['Bon état'])),
+                                DataCell(Text(stats[types]['En panne'])),
+                                DataCell(Text(stats[types]['Abandonné'])),
+                                DataCell(Text(stats[types]['Total'])),
                             ]
                         )
                     )
@@ -49,17 +60,18 @@ class StatCommuneControl(Card):
                     Row(
                         [
                             Container(
-                                content=Text(f"{commune}")
+                                content=Text(f"les dates")
                             )
                         ],alignment=MainAxisAlignment.CENTER,
                     
                     ),
                     Column(
                         [
-                            CustomTitleLabel(title="Nombre en état",value=stat_general['total_bon_etat']),
-                            CustomTitleLabel(title="Nombre en panne",value=stat_general['total_panne']),
-                            CustomTitleLabel(title="Nombre Abandonné",value=stat_general['total_abandonne']),
-                            CustomTitleLabel(title="Nombre d'ouvrages",value=stat_general['total_ouvrages'])
+                            CustomTitleLabel(title="Total Ouvrages",value=stats_data['total_ouvrages']),
+                            CustomTitleLabel(title="Total Communes",value=stats_data['total_communes']),
+                            CustomTitleLabel(title="Total Cantons",value=stats_data['total_cantons']),
+                            CustomTitleLabel(title="Liste Communes",value=texte_commune),
+                            CustomTitleLabel(title="Liste Cantons",value=texte_canton),
                         ],spacing=0
                     ),
                     Mytable_ouvrage

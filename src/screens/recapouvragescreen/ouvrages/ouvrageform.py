@@ -128,12 +128,18 @@ class OuvrageForm(Container):
 
     def recupererDonnees(self):
         type_ouvrage = self.type_ouvrage.value
+        if type_ouvrage=="" or type_ouvrage==None:
+            return self.page.open(SnackBar(Text(f"⚠️ Choisissez le type_ouvrage")))
         numero_irh = self.numero_irh.value
         type_reservoir = self.type_reservoir.value
         type_energie = self.type_energie.value
         annee = self.annee.value
+        if annee=="" or annee==None:
+            return self.page.open(SnackBar(Text(f"⚠️ Inserer l'année")))
         volume = self.volume.value
         etat = self.etat.value
+        if etat=="" or etat==None:
+            return self.page.open(SnackBar(Text(f"⚠️ Choisissez l'état")))
         cause_panne=self.cause.value
         observation = self.observation.value
         return {"type_ouvrage": type_ouvrage,"numero_irh": numero_irh, "type_reservoir": type_reservoir,
@@ -144,6 +150,8 @@ class OuvrageForm(Container):
 
     def SaveData(self, e):
         donnees = self.recupererDonnees()
+        if donnees==None:
+            return False
         conn = sqlite3.connect(DB_PATH, check_same_thread=False)
         try:
             c = conn.cursor()

@@ -25,8 +25,7 @@ class CustomTitleLabel(Container):
                             Text(value,weight=FontWeight.W_300)
                         ],alignment=MainAxisAlignment.CENTER
                     ),
-                    expand=True,
-                    # alignment=alignment.center_left,
+                    # expand=True,
                     adaptive=True,
                 )
             ],spacing=0

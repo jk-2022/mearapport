@@ -898,6 +898,259 @@ def get_stats_canton(nom_canton):
     return stats
 
 
+def found_ouvrage_interval(date1, date2):
+    conn = sqlite3.connect(path_db)
+    conn.row_factory = sqlite3.Row
+    cur = conn.cursor()
+
+    # ------------------------------------------------------------
+    # 1️⃣ Récupération des ouvrages filtrés par dates
+    cur.execute("""
+        SELECT o.*, l.commune, l.canton, l.lieu
+        FROM ouvrages o
+        JOIN localisation l ON o.localisation_id = l.id
+        WHERE date(o.created_at) BETWEEN date(?) AND date(?)
+    """, (date1, date2))
+
+    ouvrages = cur.fetchall()
+
+    # Aucun résultat → renvoyer structure vide propre
+    if not ouvrages:
+        return {
+            "total_ouvrages": 0,
+            "total_communes": 0,
+            "total_cantons": 0,
+            "par_type_global": {},
+            "par_commune": {},
+            "par_canton": {},
+            "details": []
+        }
+
+    # ------------------------------------------------------------
+    # 2️⃣ Totaux simples
+    total = len(ouvrages)
+    communes = {o["commune"] for o in ouvrages if o["commune"]}
+    cantons = {o["canton"] for o in ouvrages if o["canton"]}
+
+    # ------------------------------------------------------------
+    # 3️⃣ STRUCTURE GLOBALE PAR TYPE (version simplifiée)
+    total_bon = 0
+    total_panne = 0
+    total_abandonne = 0
+
+    par_type_global = {}
+
+    for o in ouvrages:
+        etat = o["etat"]
+        type_ouv = o["type_ouvrage"]
+
+        # Totaux globaux par état
+        if etat == "Bon état":
+            total_bon += 1
+        elif etat == "En panne":
+            total_panne += 1
+        elif etat == "Abandonné":
+            total_abandonne += 1
+
+        # Initialisation
+        if type_ouv not in par_type_global:
+            par_type_global[type_ouv] = {
+                "Bon état": 0,
+                "En panne": 0,
+                "Abandonné": 0,
+                "Total": 0
+            }
+
+        # Comptage
+        if etat in par_type_global[type_ouv]:
+            par_type_global[type_ouv][etat] += 1
+        par_type_global[type_ouv]["Total"] += 1
+
+    par_type_global_final = {
+        "total_ouvrages": total,
+        "total_en_bon_etat": total_bon,
+        "total_en_panne": total_panne,
+        "total_abandonnee": total_abandonne,
+        "par_type": par_type_global
+    }
+
+    # ------------------------------------------------------------
+    # 4️⃣ STATISTIQUES PAR COMMUNE
+    stats_commune = {}
+
+    for o in ouvrages:
+        c = o["commune"]
+        if not c:
+            continue
+
+        if c not in stats_commune:
+            stats_commune[c] = {
+                "total_ouvrages": 0,
+                "total_bon_etat": 0,
+                "total_panne": 0,
+                "total_abandonne": 0,
+                "par_type": {}
+            }
+
+        etat = o["etat"]
+        type_ouv = o["type_ouvrage"]
+
+        # Totaux
+        stats_commune[c]["total_ouvrages"] += 1
+
+        if etat == "Bon état":
+            stats_commune[c]["total_bon_etat"] += 1
+        elif etat == "En panne":
+            stats_commune[c]["total_panne"] += 1
+        elif etat == "Abandonné":
+            stats_commune[c]["total_abandonne"] += 1
+
+        # Par type
+        if type_ouv not in stats_commune[c]["par_type"]:
+            stats_commune[c]["par_type"][type_ouv] = {
+                "Bon état": 0, "En panne": 0, "Abandonné": 0, "Total": 0
+            }
+
+        stats_commune[c]["par_type"][type_ouv][etat] += 1
+        stats_commune[c]["par_type"][type_ouv]["Total"] += 1
+
+    # ------------------------------------------------------------
+    # 5️⃣ STATISTIQUES PAR CANTON
+    stats_canton = {}
+
+    for o in ouvrages:
+        ct = o["canton"]
+        if not ct:
+            continue
+
+        if ct not in stats_canton:
+            stats_canton[ct] = {
+                "total_ouvrages": 0,
+                "total_bon_etat": 0,
+                "total_panne": 0,
+                "total_abandonne": 0,
+                "par_type": {}
+            }
+
+        etat = o["etat"]
+        type_ouv = o["type_ouvrage"]
+
+        # Totaux
+        stats_canton[ct]["total_ouvrages"] += 1
+
+        if etat == "Bon état":
+            stats_canton[ct]["total_bon_etat"] += 1
+        elif etat == "En panne":
+            stats_canton[ct]["total_panne"] += 1
+        elif etat == "Abandonné":
+            stats_canton[ct]["total_abandonne"] += 1
+
+        # Par type
+        if type_ouv not in stats_canton[ct]["par_type"]:
+            stats_canton[ct]["par_type"][type_ouv] = {
+                "Bon état": 0, "En panne": 0, "Abandonné": 0, "Total": 0
+            }
+
+        stats_canton[ct]["par_type"][type_ouv][etat] += 1
+        stats_canton[ct]["par_type"][type_ouv]["Total"] += 1
+
+    # ------------------------------------------------------------
+    # 6️⃣ LISTE DES DÉTAILS AVEC COMMUNE ET CANTON
+    details = [
+        {
+            "id": o["id"],
+            "type_ouvrage": o["type_ouvrage"],
+            "etat": o["etat"],
+            "annee": o["annee"],
+            "commune": o["commune"],
+            "canton": o["canton"],
+            "lieu": o["lieu"]
+        }
+        for o in ouvrages
+    ]
+
+    conn.close()
+
+    # ------------------------------------------------------------
+    # 7️⃣ STRUCTURE FINALE
+    return {
+        "total_ouvrages": total,
+        "total_communes": len(communes),
+        "total_cantons": len(cantons),
+        "par_type_global": par_type_global_final,
+        "par_commune": stats_commune,
+        "par_canton": stats_canton,
+        "details": details
+    }
+
+
+
+# def found_ouvrage_interval(date1, date2):
+#     conn = sqlite3.connect(path_db, check_same_thread=False)
+#     conn.row_factory = sqlite3.Row
+#     c = conn.cursor()
+
+#     # 1️⃣ – Récupération des ouvrages dans l'intervalle
+#     c.execute("""
+#         SELECT *
+#         FROM ouvrages
+#         WHERE DATE(created_at) BETWEEN DATE(?) AND DATE(?)
+#         ORDER BY created_at DESC
+#     """, (date1, date2))
+
+#     ouvrages = [dict(row) for row in c.fetchall()]
+
+#     # 2️⃣ – Calcul du total d'ouvrages
+#     total_ouvrages = len(ouvrages)
+
+#     # 3️⃣ – Statistiques par type d’ouvrage
+#     par_type = defaultdict(lambda: {
+#         "Bon état": 0,
+#         "En panne": 0,
+#         "Abandonné": 0,
+#         "total": 0
+#     })
+
+#     for o in ouvrages:
+#         type_o = o.get("type_ouvrage", "Inconnu")
+#         etat = o.get("etat", "Inconnu")
+
+#         # Comptages
+#         if etat in ["Bon état", "En panne", "Abandonné"]:
+#             par_type[type_o][etat] += 1
+
+#         par_type[type_o]["total"] += 1
+
+#     conn.close()
+
+#     # 4️⃣ – Structure finale du retour
+#     return {
+#         "date_debut": date1,
+#         "date_fin": date2,
+#         "total_ouvrages": total_ouvrages,
+#         "par_type": dict(par_type),  # conversion defaultdict → dict
+#         "details": ouvrages,         # liste complète des ouvrages trouvés
+#     }
+
+
+# def found_ouvrage_interval(date1, date2):
+#     conn = sqlite3.connect(path_db, check_same_thread=False)
+#     conn.row_factory = sqlite3.Row  # Pour récupérer les résultats en dict
+#     c = conn.cursor()
+
+#     c.execute("""
+#         SELECT *
+#         FROM ouvrages
+#         WHERE DATE(created_at) BETWEEN DATE(?) AND DATE(?)
+#         ORDER BY created_at DESC
+#     """, (date1, date2))
+
+#     results = [dict(row) for row in c.fetchall()]
+
+#     conn.close()
+#     return results
+
+
 def _norm(s):
     """Nettoie les chaînes (supprime espaces, None -> 'Inconnue')."""
     if s is None:

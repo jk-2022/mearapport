@@ -30,6 +30,7 @@ class StatView(View):
                                         ElevatedButton('Stats générals', on_click=self.page_go_general),
                                         ElevatedButton('Stats communes', on_click=self.page_go_commune),
                                         ElevatedButton('Stats cantons', on_click=self.page_go_canton),
+                                        ElevatedButton('Stats intervalle dates', on_click=self.page_go_interval),
                                     ], alignment=MainAxisAlignment.SPACE_EVENLY
                                 )
                         )
@@ -54,4 +55,6 @@ class StatView(View):
         self.page.go('/statcommune') 
     def page_go_canton(self,e):
         self.page.go('/statcanton')
+    def page_go_interval(self,e):
+        self.page.go('/intervaldate')
         

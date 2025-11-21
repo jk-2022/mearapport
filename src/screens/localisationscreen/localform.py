@@ -156,16 +156,27 @@ class LocalForm(Container):
     def recupererDonnees(self):
         prefecture = self.prefecture.value
         commune = self.commune.value
+        if commune=="" or commune==None:
+            return self.page.open(SnackBar(Text(f"⚠️ Inserer la commune")))
         canton = self.canton.value
+        if canton=="" or canton==None:
+            return self.page.open(SnackBar(Text(f"⚠️ Inserer le canton")))
         localite = self.localite.value
         lieu = self.lieu.value
+        if lieu=="" or lieu==None:
+            return self.page.open(SnackBar(Text(f"⚠️ Inserer le lieu")))
+            # return self.page.open(SnackBar(Text(f"✅ Inserer le lieu")))
         coordonnee_x = self.coordonnee_x.value
         coordonnee_y = self.coordonnee_y.value
         choix_entreprise = self.choix_entreprise.value
+        if choix_entreprise=="" or choix_entreprise==None:
+            return self.page.open(SnackBar(Text(f"⚠️ Donner le nom de l'entreprise ")))
         return {"prefecture": prefecture, "commune": commune, "canton": canton, "localite": localite,"lieu": lieu, "coordonnee_x": coordonnee_x, "coordonnee_y": coordonnee_y, "entreprise": choix_entreprise}
 
     def SaveData(self, e):
         donnees = self.recupererDonnees()
+        if donnees==None:
+            return False
         projet_id=self.projet['id']
         conn = sqlite3.connect(DB_PATH, check_same_thread=False)
         try:
