@@ -3,6 +3,7 @@ from myaction import get_statistiques, get_stats_commune, get_stats_canton
 
 from mystorage import *
 from donnees import *
+from uix.statbtncard import StatBtnCard
 
 class StatView(View):
     def __init__(self, page : Page,route:str="/stats"):
@@ -27,10 +28,10 @@ class StatView(View):
                             height=self.page.window.height-110,
                             content=Column(
                                     [
-                                        ElevatedButton('Stats générals', on_click=self.page_go_general),
-                                        ElevatedButton('Stats communes', on_click=self.page_go_commune),
-                                        ElevatedButton('Stats cantons', on_click=self.page_go_canton),
-                                        ElevatedButton('Stats intervalle dates', on_click=self.page_go_interval),
+                                        StatBtnCard(title='Stats générals', on_click=self.page_go_general),
+                                        StatBtnCard(title='Stats communes', on_click=self.page_go_commune),
+                                        StatBtnCard(title='Stats cantons', on_click=self.page_go_canton),
+                                        StatBtnCard(title='Stats intervalle dates', on_click=self.page_go_interval),
                                     ], alignment=MainAxisAlignment.SPACE_EVENLY
                                 )
                         )
